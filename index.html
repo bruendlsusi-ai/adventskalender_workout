@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workout-Adventskalender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1b2d; --bg2:#152640; --card:#1b3050; --ink:#f4efe4; --muted:#a9b6c8;
+  --gold:#e8b44c; --red:#c8423b; --green:#3f8f6b; --line:rgba(255,255,255,.1);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:Inter,system-ui,sans-serif; color:var(--ink);
+  background:radial-gradient(1200px 600px at 50% -10%, #23406a 0%, var(--bg) 60%) fixed, var(--bg);
+  min-height:100vh;
+}
+.snow{position:fixed;inset:0;pointer-events:none;opacity:.35;
+  background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(1.5px 1.5px at 120px 80px,#fff,transparent),radial-gradient(1px 1px at 200px 150px,#fff,transparent),radial-gradient(2px 2px at 300px 60px,#fff,transparent),radial-gradient(1px 1px at 380px 190px,#fff,transparent);
+  background-size:420px 220px}
+.wrap{max-width:1100px;margin:0 auto;padding:40px 20px 60px;position:relative}
+header{text-align:center;margin-bottom:28px}
+.eyebrow{letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:var(--gold);font-weight:600}
+h1{font-family:Fraunces,serif;font-weight:700;font-size:clamp(34px,6vw,58px);margin:8px 0 10px;line-height:1.05}
+.lead{color:var(--muted);max-width:640px;margin:0 auto;line-height:1.55}
+.toolbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:22px 0 8px}
+.btn{font:inherit;font-size:14px;font-weight:600;border-radius:999px;padding:9px 16px;cursor:pointer;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink)}
+.btn:hover{background:rgba(255,255,255,.12)}
+.btn.primary{background:var(--gold);color:#1a1307;border-color:transparent}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.on{background:var(--green);border-color:transparent}
+.legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:22px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+@media(max-width:820px){.grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:520px){.grid{grid-template-columns:repeat(3,1fr)}}
+.door{position:relative;aspect-ratio:1/1.08;border-radius:14px;cursor:pointer;border:1px solid var(--line);
+  background:linear-gradient(160deg,var(--card),var(--bg2));display:flex;flex-direction:column;justify-content:space-between;padding:12px;
+  transition:transform .15s ease, box-shadow .15s ease;overflow:hidden;text-align:left;color:inherit;font:inherit}
+.door:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.door .num{font-family:Fraunces,serif;font-size:clamp(30px,5vw,44px);font-weight:700;line-height:1}
+.door .tag{font-size:11px;font-weight:600;letter-spacing:.04em;opacity:.9}
+.door .bar{position:absolute;left:0;top:0;bottom:0;width:5px}
+.door.locked{cursor:not-allowed;opacity:.55}
+.door.locked:hover{transform:none;box-shadow:none}
+.door.locked .tag::before{content:"🔒 "}
+.door.done{border-color:rgba(232,180,76,.6)}
+.door.done::after{content:"✓";position:absolute;right:10px;top:8px;color:var(--gold);font-weight:700}
+.door.today{outline:2px solid var(--gold);outline-offset:2px}
+.door.big{grid-column:span 2}
+@media(max-width:520px){.door.big{grid-column:span 1}}
+
+.info{margin-top:34px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:820px){.info{grid-template-columns:1fr}}
+.info div{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:16px 18px;font-size:14px;line-height:1.55;color:var(--muted)}
+.info h3{margin:0 0 6px;color:var(--ink);font-size:15px}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(5,10,20,.72);display:none;align-items:flex-start;justify-content:center;padding:30px 14px;overflow:auto;z-index:10}
+.overlay.show{display:flex}
+.modal{background:#fbf7ee;color:#1d2330;border-radius:18px;max-width:680px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.5);overflow:hidden}
+.mhead{padding:22px 24px 16px;color:#fff;position:relative}
+.mhead .day{font-size:12px;letter-spacing:.16em;text-transform:uppercase;opacity:.85;font-weight:600}
+.mhead h2{font-family:Fraunces,serif;margin:4px 0 10px;font-size:30px;line-height:1.1}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:rgba(255,255,255,.2);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600}
+.close{position:absolute;right:14px;top:12px;background:rgba(255,255,255,.2);border:0;color:#fff;width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer}
+.mbody{padding:20px 24px 24px}
+.mbody h4{margin:16px 0 8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#6b7383}
+.mbody h4:first-child{margin-top:0}
+.ex{list-style:none;padding:0;margin:0;counter-reset:ex}
+.ex li{counter-increment:ex;display:grid;grid-template-columns:28px 1fr;gap:8px;padding:9px 0;border-bottom:1px solid #e9e2d2}
+.ex li::before{content:counter(ex);width:24px;height:24px;border-radius:50%;background:#1d2330;color:#fbf7ee;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.ex b{display:block}
+.ex small{color:#5b6372;line-height:1.45}
+.note{background:#f1eadb;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.5;margin-top:8px}
+.note.scale{background:#e5efe9}
+
+.timer{margin-top:18px;background:#1d2330;color:#fbf7ee;border-radius:14px;padding:18px;text-align:center}
+.tphase{font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;min-height:18px}
+.tclock{font-family:Fraunces,serif;font-size:64px;font-weight:700;line-height:1.05;font-variant-numeric:tabular-nums}
+.tinfo{font-size:13px;color:#a9b6c8;min-height:18px}
+.tprog{height:6px;background:rgba(255,255,255,.12);border-radius:6px;margin:12px 0;overflow:hidden}
+.tprog i{display:block;height:100%;width:0;background:var(--gold);transition:width .25s linear}
+.tbtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.timer.work .tphase{color:#ff8a7f}
+.timer.rest .tphase{color:#7fd1a8}
+.timer.prep .tphase{color:var(--gold)}
+.donebtn{margin-top:14px;width:100%}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="snow"></div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Dezember-Challenge · 24 Mini-Workouts</div>
+    <h1>Workout-Adventskalender</h1>
+    <p class="lead">Jeden Tag ein Türchen, jeden Tag ein kurzes Workout: 4 bis 10 Minuten, ohne Geräte, überall machbar. Kraft, Sprungkraft, Rumpfstabilität und Mobilität im Wechsel – damit ihr gut durch die Grundlagenperiode kommt.</p>
+    <div class="toolbar">
+      <button class="btn" id="previewBtn" title="Öffnet alle Türchen unabhängig vom Datum">👀 Trainer-Vorschau: alle öffnen</button>
+      <button class="btn" id="resetBtn">Fortschritt zurücksetzen</button>
+    </div>
+    <div class="legend" id="legend"></div>
+  </header>
+
+  <div class="grid" id="grid"></div>
+
+  <section class="info">
+    <div><h3>🔥 Vor jedem Workout</h3>2–3 Minuten lockeres Aufwärmen: auf der Stelle traben, Arm- und Hüftkreisen, ein paar Kniebeugen. An den Sprungtagen besonders wichtig.</div>
+    <div><h3>⏱️ Timer eingebaut</h3>Jedes Türchen hat einen passenden Timer (Tabata, EMOM, AMRAP oder auf Zeit) inklusive 10 Sekunden Vorlauf und Signalton.</div>
+    <div><h3>🎯 Intensität</h3>Saubere Bewegungsausführung vor Tempo. Bei Ermüdung lieber die Variante unter „Leichter“ wählen. Nicht an harten Intervalltagen zusätzlich die intensiven Türchen machen.</div>
+  </section>
+  <footer>Viel Spaß und frohe Adventszeit! 🎄</footer>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="mhead" id="mhead">
+      <button class="close" id="closeBtn" aria-label="Schließen">✕</button>
+      <div class="day" id="mday"></div>
+      <h2 id="mtitle"></h2>
+      <div class="chips" id="mchips"></div>
+    </div>
+    <div class="mbody">
+      <h4>Ablauf</h4>
+      <div id="mformat" class="note"></div>
+      <h4>Übungen</h4>
+      <ul class="ex" id="mex"></ul>
+      <h4>Coaching-Tipp</h4>
+      <div id="mtip" class="note"></div>
+      <div id="mscale" class="note scale"></div>
+
+      <div class="timer" id="timer">
+        <div class="tphase" id="tphase">Bereit?</div>
+        <div class="tclock" id="tclock">00:00</div>
+        <div class="tinfo" id="tinfo"></div>
+        <div class="tprog"><i id="tbar"></i></div>
+        <div class="tbtns">
+          <button class="btn primary" id="tstart">▶ Start</button>
+          <button class="btn" id="treset">↺ Zurücksetzen</button>
+          <button class="btn" id="tsound">🔊 Ton an</button>
+        </div>
+      </div>
+      <button class="btn primary donebtn" id="doneBtn">✓ Geschafft!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CAT = {
+  kraft:{label:"Kraft", c:"#c8423b"},
+  rumpf:{label:"Rumpf", c:"#3f7fbf"},
+  plyo:{label:"Sprungkraft", c:"#d9822b"},
+  lauf:{label:"Laufspezifisch", c:"#3f8f6b"},
+  mobi:{label:"Mobilität", c:"#8a63b8"},
+  ganz:{label:"Ganzkörper", c:"#b8963a"}
+};
+
+/* timer types:
+   {t:"int", work, rest, rounds, labels[]}  – Intervall (Tabata etc.)
+   {t:"emom", min, labels[]}                – jede Minute
+   {t:"amrap", min}                         – so viele Runden wie möglich
+   {t:"ft", cap}                            – auf Zeit (Stoppuhr, Zeitlimit in min)
+*/
+const W = [
+ {d:1, cat:"kraft", title:"Tabata Kniebeuge", dur:"4 min", format:"Tabata: 8 Runden à 20 s Belastung / 10 s Pause.",
+  ex:[["Kniebeuge (Air Squat)","Hüftbreiter Stand, Gewicht auf ganzem Fuß, Knie folgen den Fußspitzen, mindestens parallele Tiefe."]],
+  tip:"Wiederholungen jeder Runde zählen – die schwächste Runde ist euer Score. Ziel: möglichst konstant bleiben.",
+  scale:"Leichter: Kniebeuge auf einen Stuhl. Schwerer: Sprungkniebeuge in den Runden 5–8.",
+  timer:{t:"int",work:20,rest:10,rounds:8,labels:["Kniebeuge"]}},
+ {d:2, cat:"rumpf", title:"Core-Tabata", dur:"4 min", format:"Tabata: 8 Runden à 20 s / 10 s, Übungen im Wechsel.",
+  ex:[["Unterarmstütz (Plank)","Körper in einer Linie, Bauch und Gesäß aktiv, kein Hohlkreuz."],["Mountain Climbers","Aus dem Liegestütz Knie zügig abwechselnd zur Brust, Hüfte bleibt tief."]],
+  tip:"Im Unterarmstütz aktiv die Ellbogen Richtung Füße „ziehen“ – das erhöht die Rumpfspannung deutlich.",
+  scale:"Leichter: Plank auf den Knien, Mountain Climbers langsam. Schwerer: Plank mit abwechselndem Beinheben.",
+  timer:{t:"int",work:20,rest:10,rounds:8,labels:["Unterarmstütz","Mountain Climbers"]}},
+ {d:3, cat:"kraft", title:"EMOM Beine & Push", dur:"8 min", format:"EMOM 8 min: Zu Beginn jeder Minute die Übung ausführen, Rest der Minute Pause.",
+  ex:[["Ungerade Minuten: 10 Ausfallschritte je Seite","Großer Schritt nach vorn, hinteres Knie kurz über dem Boden, Oberkörper aufrecht."],["Gerade Minuten: 8–12 Liegestütze","Hände schulterbreit, Ellbogen ca. 45° zum Körper."]],
+  tip:"Pro Minute sollten mindestens 20 s Pause bleiben. Wird es knapp, Wiederholungen reduzieren.",
+  scale:"Leichter: Liegestütz erhöht (Tisch/Bank). Schwerer: Ausfallschritte im Wechselsprung.",
+  timer:{t:"emom",min:8,labels:["10 Ausfallschritte/Seite","8–12 Liegestütze"]}},
+ {d:4, cat:"lauf", title:"Mini-Lauf-ABC", dur:"8 min", format:"8 Runden à 30 s Belastung / 30 s Pause (auf der Stelle oder auf 10–15 m).",
+  ex:[["Fußgelenksarbeit","Kurze, schnelle Kontakte über den Vorfuß, Knie fast gestreckt."],["Skippings","Hohe Frequenz, Knie bis knapp unter Hüfthöhe, aktiver Armeinsatz."],["Anfersen","Ferse zügig unter das Gesäß, Knie zeigt nach unten."],["Hopserlauf","Rhythmisch, Betonung des Abdrucks, Knie und gegengleicher Arm hoch."]],
+  tip:"Jede Übung 2× (Reihenfolge 1–4, dann wiederholen). Fokus auf aufrechte Haltung und kurze Bodenkontaktzeit, nicht auf Ermüdung.",
+  scale:"Leichter: Belastung 20 s. Schwerer: im Anschluss 2 × 60 m Steigerungslauf.",
+  timer:{t:"int",work:30,rest:30,rounds:8,labels:["Fußgelenksarbeit","Skippings","Anfersen","Hopserlauf"]}},
+ {d:5, cat:"lauf", title:"Fuß & Wade stabil", dur:"6 min", format:"2 Durchgänge, je Übung 40 s / 20 s Pause.",
+  ex:[["Einbeinstand mit geschlossenen Augen","Wechsel nach 20 s. Kleine Ausgleichsbewegungen im Fuß sind erwünscht."],["Exzentrisches Wadenheben","Beidbeinig hoch, einbeinig langsam (3 s) absenken – gern auf einer Stufe."],["Seilspringen / Pogo-Sprünge","Kleine, reaktive Sprünge aus dem Fußgelenk."]],
+  tip:"Prävention gegen Achillessehnen- und Wadenprobleme: das langsame Absenken ist der wichtigste Teil.",
+  scale:"Leichter: Einbeinstand mit offenen Augen. Schwerer: Einbeinstand auf Kissen.",
+  timer:{t:"int",work:40,rest:20,rounds:6,labels:["Einbeinstand","Exzentr. Wadenheben","Pogo-Sprünge"]}},
+ {d:6, cat:"ganz", title:"Nikolaus-Leiter", dur:"max. 8 min", big:true, format:"Auf Zeit: Leiter 1–2–3–…–8 Wiederholungen. Nach jeder Stufe: 10 Hampelmänner. Zeitlimit 8 min.",
+  ex:[["Burpees","Runter in den Liegestütz, Brust zum Boden, aufspringen mit Klatscher über dem Kopf."],["10 Hampelmänner","Als aktive Erholung zwischen den Stufen."]],
+  tip:"Insgesamt 36 Burpees. Gleichmäßig anfangen – Stufe 6–8 entscheidet über die Zeit. 🎅",
+  scale:"Leichter: Burpees ohne Liegestütz und ohne Sprung. Schwerer: Leiter bis 10 (55 Burpees).",
+  timer:{t:"ft",cap:8}},
+ {d:7, cat:"mobi", title:"Hüft-Mobility-Flow", dur:"6 min", format:"6 Runden à 45 s / 15 s Übergang.",
+  ex:[["90/90-Sitz mit Wechsel","Beide Knie 90° gebeugt, langsam von Seite zu Seite drehen."],["World’s Greatest Stretch (li)","Ausfallschritt, Ellbogen zum Innenrist, dann Arm aufdrehen."],["World’s Greatest Stretch (re)","Wie zuvor, andere Seite."],["Hüftbeuger-Dehnung (li)","Halbkniestand, Gesäß anspannen, Becken leicht aufrichten."],["Hüftbeuger-Dehnung (re)","Wie zuvor, andere Seite."],["Katze-Kuh","Wirbel für Wirbel rund und lang werden."]],
+  tip:"Ruhig atmen, nicht in den Schmerz gehen. Ideal nach einer Laufeinheit oder am Abend.",
+  scale:"Leichter: Bewegungsamplitude verkleinern. Schwerer: im 90/90 ohne Handstütze wechseln.",
+  timer:{t:"int",work:45,rest:15,rounds:6,labels:["90/90","WGS links","WGS rechts","Hüftbeuger links","Hüftbeuger rechts","Katze-Kuh"]}},
+ {d:8, cat:"plyo", title:"Tabata Jump", dur:"4 min", format:"Tabata: 8 Runden à 20 s / 10 s, im Wechsel.",
+  ex:[["Hampelmänner","Locker und rhythmisch aus dem Vorfuß."],["Sprungkniebeugen","Tief in die Kniebeuge, explosiv abspringen, weich landen."]],
+  tip:"Leise landen = gute Landung. Knie bleiben über den Füßen, nicht nach innen fallen lassen.",
+  scale:"Leichter: Kniebeuge statt Sprungkniebeuge. Schwerer: Sprungkniebeuge mit Knieanzug (Tuck Jump).",
+  timer:{t:"int",work:20,rest:10,rounds:8,labels:["Hampelmänner","Sprungkniebeugen"]}},
+ {d:9, cat:"kraft", title:"Posterior Chain EMOM", dur:"9 min", format:"EMOM 9 min, drei Übungen rotierend (3 Runden).",
+  ex:[["10 einbeinige Glute Bridges je Seite","Rückenlage, ein Bein gestreckt, Becken bis zur Linie Knie–Hüfte–Schulter heben."],["8 einbeinige Kreuzheben je Seite","Ohne Gewicht, Rücken gerade, Hüfte bleibt parallel zum Boden."],["30 s Rückenlage-Hollow Hold","Lendenwirbelsäule am Boden, Schultern und Beine leicht angehoben."]],
+  tip:"Die hintere Kette (Gesäß, Beinrückseite) ist beim Laufen der Motor – heute bewusst langsam und kontrolliert.",
+  scale:"Leichter: beidbeinige Bridges. Schwerer: 2 s Haltephase oben.",
+  timer:{t:"emom",min:9,labels:["Glute Bridges einbeinig","Einbeiniges Kreuzheben","Hollow Hold 30 s"]}},
+ {d:10, cat:"rumpf", title:"Plank-Karussell", dur:"6 min", format:"8 Runden à 30 s / 15 s Pause.",
+  ex:[["Unterarmstütz","Neutrale Wirbelsäule."],["Seitstütz links","Hüfte hoch, Körper in einer Linie."],["Seitstütz rechts","Wie zuvor."],["Liegestütz mit Schulter-Tippen","Hüfte bleibt ruhig, Füße etwas breiter."]],
+  tip:"2 Durchgänge. Im Seitstütz die obere Hüfte leicht nach vorn drehen, nicht nach hinten kippen.",
+  scale:"Leichter: alles auf den Knien. Schwerer: Seitstütz mit gehobenem oberen Bein.",
+  timer:{t:"int",work:30,rest:15,rounds:8,labels:["Unterarmstütz","Seitstütz links","Seitstütz rechts","Schulter-Tippen"]}},
+ {d:11, cat:"plyo", title:"Reaktivkraft kompakt", dur:"6 min", format:"9 Runden à 15 s Belastung / 25 s Pause – Qualität vor Quantität.",
+  ex:[["Pogo-Sprünge","Knie fast gestreckt, extrem kurze Bodenkontakte."],["Skater-Sprünge","Seitlich von Bein zu Bein, Landung stabilisieren."],["Standweitsprung + Stabilisieren","Maximal weit, 2 s stabil landen, zurückgehen."]],
+  tip:"Volle Spannung, volle Pausen: Ziel ist Schnelligkeit, nicht Erschöpfung. Nicht am Tag vor einem harten Lauf.",
+  scale:"Leichter: Sprünge kleiner, nur 6 Runden. Schwerer: Pogos einbeinig.",
+  timer:{t:"int",work:15,rest:25,rounds:9,labels:["Pogo-Sprünge","Skater-Sprünge","Standweitsprung"]}},
+ {d:12, cat:"kraft", title:"Isometrie-Block", dur:"6 min", format:"2 Durchgänge, je 40 s / 20 s Pause.",
+  ex:[["Wandsitz","Oberschenkel parallel zum Boden, Rücken an der Wand."],["Ausfallschritt-Halten (li)","Tiefe Position halten, hinteres Knie knapp über Boden."],["Ausfallschritt-Halten (re)","Wie zuvor."]],
+  tip:"Isometrische Belastung ist sehnenfreundlich und ideal in Phasen mit hohem Laufumfang.",
+  scale:"Leichter: weniger tief. Schwerer: im Wandsitz Fersen anheben.",
+  timer:{t:"int",work:40,rest:20,rounds:6,labels:["Wandsitz","Ausfallschritt links","Ausfallschritt rechts"]}},
+ {d:13, cat:"ganz", title:"Lucia-Lichterkette", dur:"7 min", format:"AMRAP 7 min: So viele Runden wie möglich.",
+  ex:[["5 Liegestütze",""],["10 Kniebeugen",""],["15 Sit-ups / Crunches",""]],
+  tip:"Runden notieren! Gutes Tempo: 5–7 Runden. Gleichmäßiger Rhythmus schlägt schnellen Start.",
+  scale:"Leichter: Liegestütze erhöht. Schwerer: 10 Liegestütze pro Runde.",
+  timer:{t:"amrap",min:7}},
+ {d:14, cat:"rumpf", title:"Tabata Rotation", dur:"4 min", format:"Tabata: 8 Runden à 20 s / 10 s, im Wechsel.",
+  ex:[["Russian Twists","Oberkörper leicht zurückgelehnt, Rotation aus der Brustwirbelsäule."],["Bear Crawl auf der Stelle / vor-zurück","Knie knapp über dem Boden, Rücken flach."]],
+  tip:"Antirotation und Rotation trainieren gezielt die Rumpfkontrolle, die ihr in der Laufbewegung braucht.",
+  scale:"Leichter: Russian Twists mit Füßen am Boden. Schwerer: mit Wasserflasche als Zusatzgewicht.",
+  timer:{t:"int",work:20,rest:10,rounds:8,labels:["Russian Twists","Bear Crawl"]}},
+ {d:15, cat:"lauf", title:"Barfuß-Fußkraft", dur:"6 min", format:"6 Runden à 45 s / 15 s Pause, barfuß.",
+  ex:[["Short Foot","Fußgewölbe aktiv aufrichten, Zehen bleiben lang am Boden."],["Zehen spreizen & einzeln heben","Großzehe allein, dann die anderen Zehen."],["Einbeiniges Wadenheben links","Langsam, volle Bewegungsamplitude."],["Einbeiniges Wadenheben rechts","Wie zuvor."],["Handtuch-Greifen","Handtuch mit den Zehen heranziehen."],["Hüpfen auf der Stelle, barfuß","Leicht, federnd, auf weichem Untergrund."]],
+  tip:"Die Fußmuskulatur ist im Training oft vergessen – sie stabilisiert das Längsgewölbe bei jedem Bodenkontakt.",
+  scale:"Leichter: Wadenheben beidbeinig. Schwerer: Wadenheben auf einer Stufe.",
+  timer:{t:"int",work:45,rest:15,rounds:6,labels:["Short Foot","Zehen spreizen","Wadenheben links","Wadenheben rechts","Handtuch-Greifen","Barfuß-Hüpfen"]}},
+ {d:16, cat:"ganz", title:"EMOM 10 Ganzkörper", dur:"10 min", format:"EMOM 10 min, fünf Stationen, 2 Durchgänge.",
+  ex:[["15 Kniebeugen",""],["10 Liegestütze",""],["20 Mountain Climbers (gesamt)",""],["30 s Unterarmstütz",""],["8 Burpees",""]],
+  tip:"Die Übung muss in max. 40 s geschafft sein, sonst Wiederholungen anpassen.",
+  scale:"Leichter: Wiederholungen halbieren. Schwerer: 12 Burpees.",
+  timer:{t:"emom",min:10,labels:["15 Kniebeugen","10 Liegestütze","20 Mountain Climbers","30 s Plank","8 Burpees"]}},
+ {d:17, cat:"rumpf", title:"Anti-Rotation & Kontrolle", dur:"8 min", format:"2 Durchgänge, je Übung 40 s / 20 s Pause.",
+  ex:[["Dead Bug","Lendenwirbelsäule bleibt am Boden, Arm und gegengleiches Bein langsam strecken."],["Bird Dog","Vierfüßlerstand, Arm und Bein diagonal strecken, 2 s halten."],["Seitstütz mit Rotation (li)","Oberen Arm unter dem Körper durchfädeln."],["Seitstütz mit Rotation (re)","Wie zuvor."]],
+  tip:"Langsam und präzise – diese Übungen verbessern die neuromuskuläre Kontrolle des Rumpfes.",
+  scale:"Leichter: Dead Bug nur mit Beinen. Schwerer: Bird Dog mit Ellbogen-Knie-Kontakt.",
+  timer:{t:"int",work:40,rest:20,rounds:8,labels:["Dead Bug","Bird Dog","Seitstütz Rotation li","Seitstütz Rotation re"]}},
+ {d:18, cat:"lauf", title:"Wandsprints", dur:"5 min", format:"10 Runden à 15 s maximal / 15 s Pause.",
+  ex:[["Wand-Sprint (A-Skip an der Wand)","Hände an der Wand, Körper ca. 45° geneigt, Knie abwechselnd explosiv hochziehen."]],
+  tip:"Fokus: Körpervorlage aus dem Sprunggelenk, Fußaufsatz unter dem Körperschwerpunkt, hohe Frequenz.",
+  scale:"Leichter: 8 Runden. Schwerer: 12 Runden oder 20 s Belastung.",
+  timer:{t:"int",work:15,rest:15,rounds:10,labels:["Wand-Sprint"]}},
+ {d:19, cat:"plyo", title:"Tabata Split Jumps", dur:"4 min", format:"Tabata: 8 Runden à 20 s / 10 s, im Wechsel.",
+  ex:[["Wechselsprung-Ausfallschritte","Aus dem Ausfallschritt abspringen und in der Luft die Beine wechseln."],["Tiefe Kniebeuge halten","Aktive Pause, Gewicht auf den Fersen."]],
+  tip:"Oberkörper bleibt aufrecht, vorderes Knie über dem Fuß. Lieber tief und kontrolliert als hektisch.",
+  scale:"Leichter: Ausfallschritte im Wechsel ohne Sprung. Schwerer: Pause von 10 s auch in der Kniebeuge halten.",
+  timer:{t:"int",work:20,rest:10,rounds:8,labels:["Split Jumps","Kniebeuge halten"]}},
+ {d:20, cat:"kraft", title:"Hüftstabi seitlich", dur:"6 min", format:"2 Durchgänge, je Übung 30 s / 15 s Pause.",
+  ex:[["Clamshells links","Seitlage, Fersen zusammen, oberes Knie öffnen."],["Clamshells rechts",""],["Seitliches Beinheben links","Bein leicht nach hinten, Fußspitze zeigt nach vorn."],["Seitliches Beinheben rechts",""]],
+  tip:"Gluteus medius stabilisiert das Becken im Einbeinstand – wichtig gegen ein Absacken der Hüfte beim Laufen.",
+  scale:"Leichter: kürzere Belastung. Schwerer: mit Miniband oberhalb der Knie.",
+  timer:{t:"int",work:30,rest:15,rounds:8,labels:["Clamshells links","Clamshells rechts","Beinheben links","Beinheben rechts"]}},
+ {d:21, cat:"mobi", title:"Längste Nacht: Regeneration", dur:"8 min", format:"8 Runden à 50 s / 10 s Übergang – ruhig und langsam.",
+  ex:[["Bauchatmung in Rückenlage","4 s ein, 6 s aus."],["Kniependel in Rückenlage","Beide Knie gebeugt locker zur Seite fallen lassen."],["Taubenhaltung links",""],["Taubenhaltung rechts",""],["Wadendehnung an der Wand",""],["Stehende Oberschenkel-Rückseite","Leicht gebeugtes Knie, Becken kippen."],["Brustwirbelsäule öffnen (Open Book)","Seitlage, oberen Arm aufdrehen."],["Kindhaltung","Arme lang, tief in den Rücken atmen."]],
+  tip:"Wintersonnenwende – heute aktiv regenerieren. Gut kombinierbar mit einem lockeren Regenerationslauf.",
+  scale:"Optional: Dauer auf 10 min verlängern (60 s pro Station).",
+  timer:{t:"int",work:50,rest:10,rounds:8,labels:["Bauchatmung","Kniependel","Taube links","Taube rechts","Waden","Beinrückseite","Open Book","Kindhaltung"]}},
+ {d:22, cat:"ganz", title:"AMRAP Winterfeuer", dur:"8 min", format:"AMRAP 8 min.",
+  ex:[["5 Burpees",""],["10 Ausfallschritte (gesamt)",""],["15 Hampelmänner",""],["20 s Hollow Hold",""]],
+  tip:"Ziel: 5+ Runden. Runden notieren und mit Tag 13 vergleichen.",
+  scale:"Leichter: Burpees ohne Sprung. Schwerer: Ausfallschritte im Sprung.",
+  timer:{t:"amrap",min:8}},
+ {d:23, cat:"ganz", title:"Tabata Quartett", dur:"8 min", format:"Doppel-Tabata: 16 Runden à 20 s / 10 s, vier Übungen rotierend.",
+  ex:[["Kniebeugen",""],["Liegestütze",""],["Mountain Climbers",""],["Hampelmänner",""]],
+  tip:"Der Vorabend-Finisher: einmal richtig fordern, morgen gibt’s die Belohnung. 🎁",
+  scale:"Leichter: nur 8 Runden (4 min). Schwerer: Sprungkniebeugen statt Kniebeugen.",
+  timer:{t:"int",work:20,rest:10,rounds:16,labels:["Kniebeugen","Liegestütze","Mountain Climbers","Hampelmänner"]}},
+ {d:24, cat:"ganz", title:"24 für den 24.", dur:"ca. 10 min", big:true, format:"Auf Zeit, 2 Runden. Zeitlimit 12 min.",
+  ex:[["24 Hampelmänner",""],["24 Kniebeugen",""],["24 Mountain Climbers (gesamt)",""],["24 Ausfallschritte (gesamt)",""],["24 Sit-ups",""],["24 s Unterarmstütz",""]],
+  tip:"Frohe Weihnachten! Zeit notieren – und dann wird gefeiert. 🎄",
+  scale:"Leichter: 1 Runde. Schwerer: 3 Runden.",
+  timer:{t:"ft",cap:12}}
+];
+
+const ORDER = [13,4,21,9,17,1,24,11,6,19,2,15,8,22,3,12,18,7,23,10,16,5,20,14];
+const STORE_KEY = "advent-workouts-done-v1";
+let done = {};
+try{ done = JSON.parse(localStorage.getItem(STORE_KEY)||"{}") }catch(e){}
+function saveDone(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(done)) }catch(e){} }
+
+let preview = false;
+function now(){ return new Date() }
+function isOpen(d){
+  if(preview) return true;
+  const n = now();
+  return n.getMonth()===11 && n.getDate()>=d;
+}
+function isToday(d){ const n=now(); return n.getMonth()===11 && n.getDate()===d }
+
+function renderLegend(){
+  document.getElementById("legend").innerHTML = Object.values(CAT).map(c=>`<span><i class="dot" style="background:${c.c}"></i>${c.label}</span>`).join("");
+}
+function renderGrid(){
+  const g = document.getElementById("grid"); g.innerHTML="";
+  ORDER.forEach(d=>{
+    const w = W[d-1]; const open = isOpen(d);
+    const b = document.createElement("button");
+    b.className = "door"+(open?"":" locked")+(done[d]?" done":"")+(isToday(d)?" today":"")+(w.big?" big":"");
+    b.innerHTML = `<span class="bar" style="background:${CAT[w.cat].c}"></span><span class="num">${d}</span><span class="tag">${open? CAT[w.cat].label+" · "+w.dur : "ab "+d+". Dez."}</span>`;
+    b.setAttribute("aria-label", "Türchen "+d);
+    b.onclick = ()=>{ if(open) openDay(d); else { b.animate([{transform:"translateX(0)"},{transform:"translateX(-5px)"},{transform:"translateX(5px)"},{transform:"translateX(0)"}],{duration:250}); } };
+    g.appendChild(b);
+  });
+}
+
+/* modal */
+let cur = null;
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])) }
+function openDay(d){
+  cur = W[d-1];
+  const c = CAT[cur.cat];
+  document.getElementById("mhead").style.background = `linear-gradient(135deg, ${c.c}, #1d2330)`;
+  document.getElementById("mday").textContent = `Türchen ${d} · ${d}. Dezember`;
+  document.getElementById("mtitle").textContent = cur.title;
+  document.getElementById("mchips").innerHTML = `<span class="chip">${c.label}</span><span class="chip">⏱ ${cur.dur}</span><span class="chip">${timerName(cur.timer)}</span>`;
+  document.getElementById("mformat").textContent = cur.format;
+  document.getElementById("mex").innerHTML = cur.ex.map(([n,t])=>`<li><div><b>${esc(n)}</b>${t?`<small>${esc(t)}</small>`:""}</div></li>`).join("");
+  document.getElementById("mtip").innerHTML = "💡 "+esc(cur.tip);
+  document.getElementById("mscale").innerHTML = "↕️ "+esc(cur.scale);
+  document.getElementById("doneBtn").textContent = done[d] ? "✓ Erledigt – nochmal markieren aufheben?" : "✓ Geschafft!";
+  resetTimer();
+  document.getElementById("overlay").classList.add("show");
+}
+function closeModal(){ stopTimer(); document.getElementById("overlay").classList.remove("show"); }
+document.getElementById("closeBtn").onclick = closeModal;
+document.getElementById("overlay").onclick = e=>{ if(e.target.id==="overlay") closeModal(); };
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeModal(); });
+document.getElementById("doneBtn").onclick = ()=>{
+  if(!cur) return;
+  if(done[cur.d]) delete done[cur.d]; else done[cur.d]=true;
+  saveDone(); renderGrid(); closeModal();
+};
+
+function timerName(t){
+  if(t.t==="int") return (t.work===20&&t.rest===10)?"Tabata":`Intervall ${t.work}/${t.rest}`;
+  if(t.t==="emom") return "EMOM";
+  if(t.t==="amrap") return "AMRAP";
+  return "Auf Zeit";
+}
+
+/* timer */
+let phases=[], pi=0, remain=0, total=0, elapsed=0, tick=null, running=false, sound=true, ftMode=false, ftCap=0, ftTime=0, actx=null;
+function buildPhases(t){
+  const p=[{type:"prep",label:"Gleich geht’s los",secs:10}];
+  if(t.t==="int"){
+    for(let r=0;r<t.rounds;r++){
+      p.push({type:"work",label:t.labels[r%t.labels.length],secs:t.work,info:`Runde ${r+1}/${t.rounds}`});
+      if(r<t.rounds-1 && t.rest>0) p.push({type:"rest",label:"Pause",secs:t.rest,info:`Nächste: ${t.labels[(r+1)%t.labels.length]}`});
+    }
+  } else if(t.t==="emom"){
+    for(let m=0;m<t.min;m++) p.push({type:"work",label:t.labels[m%t.labels.length],secs:60,info:`Minute ${m+1}/${t.min}`});
+  } else if(t.t==="amrap"){
+    p.push({type:"work",label:"AMRAP – Runden sammeln!",secs:t.min*60,info:`${t.min} Minuten`});
+  }
+  return p;
+}
+function fmt(s){ s=Math.max(0,Math.ceil(s)); return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0") }
+function beep(f=880,d=0.15){
+  if(!sound) return;
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    const o=actx.createOscillator(), g=actx.createGain();
+    o.frequency.value=f; o.connect(g); g.connect(actx.destination);
+    g.gain.setValueAtTime(0.2,actx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,actx.currentTime+d);
+    o.start(); o.stop(actx.currentTime+d);
+  }catch(e){}
+}
+function resetTimer(){
+  stopTimer();
+  const t=cur.timer; ftMode = t.t==="ft";
+  const el=document.getElementById("timer"); el.className="timer";
+  document.getElementById("tstart").textContent="▶ Start";
+  document.getElementById("tbar").style.width="0";
+  if(ftMode){
+    ftCap=t.cap*60; ftTime=-10;
+    document.getElementById("tphase").textContent="Auf Zeit – Stoppuhr";
+    document.getElementById("tclock").textContent="00:00";
+    document.getElementById("tinfo").textContent=`Zeitlimit ${t.cap} min · 10 s Vorlauf`;
+    return;
+  }
+  phases=buildPhases(t); pi=0; remain=phases[0].secs;
+  total=phases.reduce((a,p)=>a+p.secs,0); elapsed=0;
+  document.getElementById("tphase").textContent="Bereit?";
+  document.getElementById("tclock").textContent=fmt(total-10);
+  document.getElementById("tinfo").textContent="Gesamtdauer · 10 s Vorlauf";
+}
+function stopTimer(){ clearInterval(tick); tick=null; running=false; }
+function render(){
+  const el=document.getElementById("timer");
+  if(ftMode){
+    if(ftTime<0){ el.className="timer prep"; document.getElementById("tphase").textContent="Gleich geht’s los"; document.getElementById("tclock").textContent=fmt(-ftTime); }
+    else { el.className="timer work"; document.getElementById("tphase").textContent= ftTime>=ftCap?"Zeitlimit erreicht":"Los! Zeit läuft"; document.getElementById("tclock").textContent=fmt(Math.floor(ftTime)); document.getElementById("tbar").style.width=Math.min(100,ftTime/ftCap*100)+"%"; }
+    return;
+  }
+  const p=phases[pi]; el.className="timer "+p.type;
+  document.getElementById("tphase").textContent=p.label;
+  document.getElementById("tclock").textContent=fmt(remain);
+  document.getElementById("tinfo").textContent=p.info||"";
+  document.getElementById("tbar").style.width=(elapsed/total*100)+"%";
+}
+function step(){
+  if(ftMode){
+    const before=ftTime; ftTime+=0.25;
+    if(before<0 && ftTime>=0) beep(1200,.4);
+    else if(ftTime<0 && Math.ceil(ftTime)!==Math.ceil(before) && ftTime>-3.1) beep(660);
+    if(ftTime>=ftCap){ ftTime=ftCap; render(); beep(500,.6); stopTimer(); document.getElementById("tstart").textContent="▶ Start"; return; }
+    render(); return;
+  }
+  const prev=remain; remain-=0.25; elapsed+=0.25;
+  if(remain<=3 && Math.ceil(remain)!==Math.ceil(prev) && remain>0) beep(660);
+  if(remain<=0){
+    pi++;
+    if(pi>=phases.length){
+      stopTimer(); beep(500,.6);
+      const el=document.getElementById("timer"); el.className="timer rest";
+      document.getElementById("tphase").textContent="Fertig! 🎉";
+      document.getElementById("tclock").textContent="00:00";
+      document.getElementById("tinfo").textContent="Stark gemacht – jetzt Türchen abhaken.";
+      document.getElementById("tbar").style.width="100%";
+      document.getElementById("tstart").textContent="▶ Start";
+      return;
+    }
+    remain=phases[pi].secs;
+    beep(phases[pi].type==="work"?1200:440,.35);
+  }
+  render();
+}
+document.getElementById("tstart").onclick=()=>{
+  if(running){ stopTimer(); document.getElementById("tstart").textContent="▶ Weiter"; return; }
+  if(!ftMode && pi>=phases.length) resetTimer();
+  running=true; document.getElementById("tstart").textContent="⏸ Pause";
+  beep(880,.05); render(); tick=setInterval(step,250);
+};
+document.getElementById("treset").onclick=resetTimer;
+document.getElementById("tsound").onclick=e=>{ sound=!sound; e.target.textContent= sound?"🔊 Ton an":"🔇 Ton aus"; };
+
+document.getElementById("previewBtn").onclick=e=>{
+  preview=!preview; e.target.classList.toggle("on",preview);
+  e.target.textContent = preview ? "👀 Vorschau aktiv – Türchen nach Datum" : "👀 Trainer-Vorschau: alle öffnen";
+  renderGrid();
+};
+document.getElementById("resetBtn").onclick=()=>{ done={}; saveDone(); renderGrid(); };
+
+renderLegend(); renderGrid();
+</script>
+</body>
+</html>
