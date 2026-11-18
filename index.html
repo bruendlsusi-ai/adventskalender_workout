@@ -103,7 +103,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin-top:30px}
     <h1>Workout-Adventskalender</h1>
     <p class="lead">Jeden Tag ein Türchen, jeden Tag ein kurzes Workout: 4 bis 10 Minuten, ohne Geräte, überall machbar. Kraft, Sprungkraft, Rumpfstabilität und Mobilität im Wechsel – damit ihr gut durch die Grundlagenperiode kommt.</p>
     <div class="toolbar">
-      <button class="btn" id="previewBtn" title="Öffnet alle Türchen unabhängig vom Datum">👀 Trainer-Vorschau: alle öffnen</button>
+      <span class="btn on" id="previewBadge" style="display:none;cursor:default">👀 Trainer-Vorschau aktiv</span>
       <button class="btn" id="resetBtn">Fortschritt zurücksetzen</button>
     </div>
     <div class="legend" id="legend"></div>
@@ -453,14 +453,16 @@ document.getElementById("tstart").onclick=()=>{
 document.getElementById("treset").onclick=resetTimer;
 document.getElementById("tsound").onclick=e=>{ sound=!sound; e.target.textContent= sound?"🔊 Ton an":"🔇 Ton aus"; };
 
-document.getElementById("previewBtn").onclick=e=>{
-  preview=!preview; e.target.classList.toggle("on",preview);
-  e.target.textContent = preview ? "👀 Vorschau aktiv – Türchen nach Datum" : "👀 Trainer-Vorschau: alle öffnen";
+/* Trainer-Vorschau nur über geheimen Link: Seitenadresse + #trainer-vorschau */
+function checkPreview(){
+  preview = location.hash === "#trainer-vorschau";
+  document.getElementById("previewBadge").style.display = preview ? "" : "none";
   renderGrid();
-};
+}
+window.addEventListener("hashchange", checkPreview);
 document.getElementById("resetBtn").onclick=()=>{ done={}; saveDone(); renderGrid(); };
 
-renderLegend(); renderGrid();
+renderLegend(); checkPreview();
 </script>
 </body>
 </html>
