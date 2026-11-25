@@ -17,17 +17,18 @@
    Farben: light-dark(hell, dunkel) = Wert im hellen bzw. dunklen Modus           */
 :root{
   color-scheme:light dark;
-  --bg:light-dark(#0f5f78,#082e3b);      /* Hintergrund der Seite (Wasser)        */
-  --deep:light-dark(#0a4a5f,#05202a);    /* Kopfbereich + Kopf des Tagesfensters  */
+  --bg:light-dark(#1d5a3c,#0e2e1e);      /* Hintergrund der Seite (dunkelgrün)    */
+  --deep:light-dark(#123f29,#081d13);    /* Kopfbereich + Kopf des Tagesfensters  */
   --tile:light-dark(#f6faf9,#e8f1f1);    /* Türchen (Fliese)                       */
   --tile2:light-dark(#e3eeee,#cfdfe0);   /* Fugen und verschlossene Türchen        */
   --red:#e0342c;                         /* Akzent: Zahlen, Häkchen, Buttons       */
   --cyan:#8fdbea;                        /* zweiter Akzent: Hinweise, Fokusrahmen  */
+  --gold:#d9ad3c;                        /* Bommel der Leine im Kopfbereich        */
   --ink:#ffffff;                         /* Schrift auf dem Hintergrund            */
-  --tink:#10323d;                        /* Schrift auf den Türchen                */
-  --muted:light-dark(#cfe9ef,#a9cdd6);   /* gedämpfte Schrift                      */
-  --paper:light-dark(#ffffff,#0d2a33);   /* Hintergrund des Tagesfensters          */
-  --pink:light-dark(#10323d,#e9f3f5);    /* Schrift im Tagesfenster                */
+  --tink:#16301f;                        /* Schrift auf den Türchen                */
+  --muted:light-dark(#d4e9db,#b3d1bc);   /* gedämpfte Schrift                      */
+  --paper:light-dark(#ffffff,#0f2a1c);   /* Hintergrund des Tagesfensters          */
+  --pink:light-dark(#16301f,#e8f2eb);    /* Schrift im Tagesfenster                */
   --font-title:var(--font-title);         /* Schrift für Titel und Zahlen           */
   --font-text:"Source Sans 3",system-ui,sans-serif; /* Fließtext                  */
   --cols:6;                              /* Türchen pro Reihe am Laptop            */
@@ -51,7 +52,7 @@ h1{font:800 clamp(32px,5vw,52px)/1.05 var(--font-title);letter-spacing:-.02em;ma
 .status b{color:var(--cyan)}
 .waves{position:absolute;left:0;right:0;bottom:0;height:56px;width:100%}
 .rope{display:flex;gap:6px;position:absolute;left:0;right:0;bottom:46px;height:12px;overflow:hidden;opacity:.95}
-.rope i{flex:none;width:22px;height:12px;border-radius:6px;background:var(--red)}
+.rope i{flex:none;width:22px;height:12px;border-radius:6px;background:var(--gold)}
 .rope i:nth-child(3n){background:#fff}
 main{padding-top:28px;padding-bottom:40px}
 .grid{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:var(--gap);grid-auto-flow:dense;max-width:1240px;margin:0 auto}
@@ -79,9 +80,9 @@ main{padding-top:28px;padding-bottom:40px}
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--tink);color:#fff;padding:10px 16px;border-radius:8px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100vw - 32px)}
 .toast.on{opacity:1}
 dialog{border:0;padding:0;border-radius:14px;max-width:min(760px,calc(100vw - 24px));width:100%;max-height:calc(100% - 24px);background:var(--paper);color:var(--pink)}
-dialog::backdrop{background:rgba(4,24,31,.7)}
+dialog::backdrop{background:rgba(5,24,14,.7)}
 .dh{background:var(--deep);color:#fff;padding:20px 22px 18px;position:relative}
-.dh .day{font:800 15px/1 var(--font-title);color:var(--cyan)}
+.dh .day{font:800 15px/1 var(--font-title);color:var(--gold)}
 .dh h2{font:800 clamp(24px,4vw,34px)/1.1 var(--font-title);letter-spacing:-.01em;margin:6px 48px 6px 0;text-wrap:balance}
 .dh .dur{font-weight:600;color:var(--muted)}
 .x{position:absolute;top:12px;right:12px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:24px;cursor:pointer}
@@ -121,9 +122,8 @@ td.u{white-space:nowrap}
 <main class="band">
   <div class="grid" id="grid"></div>
   <div class="note">
-    <div><h2>So geht's</h2><p>Jeden Tag öffnet sich ein Türchen. Vor jeder Landeinheit 2–3 Minuten allgemein erwärmen (Hampelmann, Armkreisen, Gehen auf der Stelle).</p></div>
     <div><h2>Technik vor Tempo</h2><p>Übungen bewusst ausführen – die Qualität der Bewegung geht vor Wiederholungszahl. Wo möglich vor dem Spiegel oder mit Partner-Feedback üben.</p></div>
-    <div><h2>Im Wasser</h2><p>Die Wassereinheiten greifen die vorher trocken geübten Elemente gezielt auf. Material: Pullbuoy, Schwimmbrett, Flossen (optional).</p></div>
+    <div><h2>Im Wasser</h2><p>Die Wassereinheiten greifen die vorher trocken geübten Elemente gezielt auf.</p></div>
   </div>
 </main>
 <div class="toast" id="toast" role="status"></div>
