@@ -112,7 +112,7 @@ td.u{white-space:nowrap}
 <header class="band">
   <div class="wrap">
     <h1>Schwimm-Adventskalender</h1>
-    <p class="lead">24 Mini-Workouts vom 1. bis 24. Dezember: Trockentechnik und Athletik für zu Hause, dazu drei Wassereinheiten am 3., 10. und 17. Dezember.</p>
+    <p class="lead">24 Mini-Workouts vom 1. bis 24. Dezember: Trockentechnik und Athletik für zu Hause, dazu drei Wassereinheiten an den Samstagen 5., 12. und 19. Dezember.</p>
     <p class="status" id="status"></p>
     <button class="btn pv" id="pvt" aria-pressed="false">Vorschau: alle Türchen öffnen</button>
   </div>
@@ -135,32 +135,412 @@ td.u{white-space:nowrap}
 <script>
 {
 const W=[["Teil","Inhalt","Umfang","Hinweis"]];
+/* ===================== ÜBUNGEN: hier die Inhalte der Türchen ändern =====================
+   t = Titel · d = Dauer · z = ["Ziel" oder "Format", Text] · m = Material
+   b = Übungen: [Blocküberschrift oder null, [Übung, Übung, ...]]
+   a = Achten auf · w:1 = Wassereinheit · tb = Tabelle [Teil, Inhalt, Umfang, Hinweis] · o = Beobachtung · p:1 = Ruhetag
+   Text immer in "..." – im Text selbst nur „…“ verwenden. Zwischen allen Einträgen ein Komma. */
 const D=[
-{t:"Schulter- und BWS-Mobilisation",d:"10 min",z:["Ziel","Bewegungsumfang im Schultergelenk und Rotationsfähigkeit der Brustwirbelsäule für Armzug und Körperrotation verbessern."],b:[[null,["Großes Armkreisen vorwärts und rückwärts, einarmig und gegengleich – je 10×","Wandengel: Rücken, Hinterkopf und Unterarme an der Wand, Arme langsam nach oben schieben – 2 × 10","Offenes Buch in Seitlage: oberen Arm öffnen, Blick folgt der Hand – je Seite 10×","Vierfüßlerstand mit Hand am Hinterkopf, Ellbogen zur Decke rotieren – je Seite 10×","Streamline-Dehnung an der Wand: Hände übereinander, Brustkorb sanft zur Wand – 3 × 20 s"]]],a:"Kein Ausweichen des Beckens; Bewegung aus der Brustwirbelsäule."},
-{t:"Tabata Streamline-Power",d:"9 min",z:["Format","2 Tabata-Blöcke à 4 min (8 × 20 s Belastung / 10 s Pause), dazwischen 1 min Pause. Die beiden Übungen eines Blocks wechseln sich ab."],m:"keins",b:[["Block A – Beine und Rumpf",["Squat Jumps mit Armen in Streamline (Landung weich, sofort wieder in Streamline)","Hohlkörperhalte mit Kraulbeinschlag (Flutter-Kicks)"]],["Block B – Oberkörper und Rückseite",["Liegestütz (ggf. auf Knien)","Superman in Bauchlage mit langsamem Kraul-Wechselarmzug"]]],a:"In den 20 s auf saubere Streamline achten statt auf maximale Wiederholungszahl; Wiederholungen pro Intervall notieren und in den letzten Runden möglichst halten."},
-{t:"Wassereinheit: Kraultechnik",d:"45 min",w:1,z:["Ziel","Einstieg ins Wasser: Streamline, Wasserlage, Beinschlag, Atmung und Wasserfassen im Kraul erproben. Die folgenden Trockeneinheiten (4, 6, 8, 11, 13) vertiefen diese Elemente. Gesamtumfang ca. 1.400 m."],tb:[["Einschwimmen","Kraul locker, jede 4. Bahn Rücken","200 m","ruhig, Atmung im Dreierrhythmus"],["Gleiten","Abstoß in Streamline, so weit wie möglich gleiten","6 × Abstoß","Transfer von Einheit 2"],["Beinschlag","Kraulbeine mit Brett, dann ohne Brett in Streamline","4 × 50 m, 20 s P.","Bewegung aus der Hüfte"],["Beinschlag + Rotation","Seitlage-Beinschlag (6 Kicks), dann Rotation","4 × 25 m","vertieft in Einheit 6"],["Atmung","Kraul mit Atmung alle 3/5/3 Züge","4 × 50 m","Ausatmen unter Wasser"],["Armzug","Abschlagschwimmen (Catch-up), Fokus hoher Ellbogen","4 × 50 m","vertieft in Einheit 11"],["Armzug","Kraul mit Pullbuoy","4 × 50 m, 20 s P.","lang ziehen, Hand an Oberschenkel"],["Gesamtlage","Kraul Gesamtbewegung, Technik vor Tempo","4 × 50 m","Züge pro Bahn zählen"],["Ausschwimmen","Locker nach Wahl","100 m",""]]},
-{t:"Körperspannung",d:"10 min",z:["Ziel","Die gestreckte, widerstandsarme Grundposition als Bewegungsvorstellung verankern."],b:[[null,["Gestreckte Position im Stand: Arme über Kopf, Oberarme hinter den Ohren, Hände übereinander, Zehenstand – 5 × 15 s","Gestreckte Position in Rückenlage auf der Matte, Fersen und Arme 2 cm angehoben – 4 × 20 s","Superman in Bauchlage – 4 × 15 s","Wechsel Rückenlage → Bauchlage: ohne Bodenkontakt von Armen und Beinen – 3 × 4 Rollen"]]],a:"Kopf in Verlängerung der Wirbelsäule zwischen den Armen; Bauch- und Gesäßmuskulatur aktiv."},
-{t:"Zugkraft Kraul mit Alltagsgegenständen",d:"12 min",z:["Ziel","Stabilisation Zugmuskulatur (M. latissimus dorsi, M. triceps brachii) und Schulter ohne Sportgeräte. 3 Durchgänge, 30 s Pause."],m:"Handtuch",b:[[null,["Handtuch-Armzug: Kniestütz auf glattem Boden, eine Hand auf dem Handtuch weit vorne, Handtuch mit hohem Ellbogen bis unter die Schulter ziehen – je Seite 10×","Stuhl-Dips (Druckphase): Hände auf der Sitzfläche, Ellbogen nach hinten beugen und strecken – 12×","Handtuch-Außenrotation: Handtuch straff zwischen den Händen, Ellbogen am Körper, Unterarme nach außen ziehen und 2 s halten – 15×","Y-T-W in Bauchlage ohne Gewicht (Schulterblätter zusammen, Daumen zeigen nach oben) – je Position 8×"]]],a:"Hoher Ellbogen bleibt auch beim Handtuch-Armzug erhalten; der Zug endet hinten an der Hüfte. Last über Füllmenge der Flaschen bzw. Bücher im Rucksack anpassen. Schulterstabilisierende Übungen (5, 6) nicht weglassen."},
-{t:"Kraulbeinschlag trocken",d:"10 min",z:["Ziel","Bewegungsauftrag des Kraulbeinschlags aus der Hüfte mit lockerem Fußgelenk und gestreckter Fußspitze."],b:[[null,["Fußgelenksmobilisation im Fersensitz (Fußrücken auf der Matte), leicht nach hinten lehnen – 3 × 30 s","Fußkreisen und Plantarflexion im Sitz – je Fuß 15×","Beinschlag in Bauchlage auf Bank oder Kasten, Hüfte an der Kante – 4 × 30 s","Beinschlag in Rückenlage auf der Matte, Unterarme unter dem Gesäß – 4 × 30 s","Beinschlag in Seitlage (vorbereitend für die Rotationsphase) – je Seite 2 × 20 s"]]],a:"Bewegung beginnt in der Hüfte, Knie nur leicht gebeugt („Peitschenschlag“), kein „Fahrradfahren“. Kleine Amplitude, hohe Frequenz."},
-{t:"AMRAP Brustbeine",d:"10 min",z:["Format","As Many Rounds As Possible – in 10 min so viele Runden wie möglich, Runden zählen."],m:"Bett- oder Sofakante, Wand",b:[[null,["10 Frog Jumps: Hocke mit ausgedrehten Füßen, explosiv in Streamline nach oben springen","10 Brustbeinschläge in Bauchlage auf der Bett- oder Sofakante (Hüfte an der Kante, Beine frei)","10 Sumo-Squats mit angezogenen Fußspitzen (Dorsalflexion) und 2 s Halt unten","20 s Wandsitz mit Armen in Streamline"]]],a:"Beim Brustbeinschlag Fersen zum Gesäß, Füße aktiv ausdrehen und kreisförmig schließen – die Technik geht vor der Rundenzahl. Bei Kniebeschwerden Frog Jumps durch Sumo-Squats ersetzen."},
-{t:"Atmung und Atemrhythmus",d:"10 min",z:["Ziel","Seitatmung mit minimaler Kopfbewegung und vollständige Ausatmung automatisieren."],b:[[null,["Ausatmen gegen Widerstand: durch Mund und Nase langsam ausblasen, als wäre das Gesicht im Wasser – 10 × 5 s","Seitatmung im Stand, Oberkörper vorgeneigt: Kopf mit der Schulterrotation drehen, ein Auge bleibt „im Wasser“ – je Seite 10×","Kombination mit einarmigem Armzug im Stand: Atmung zur Zugarmseite – je Seite 10×","Dreier-Atemrhythmus im Stand mit Wechselarmzug – 3 × 1 min","Optional: Atemhaltung im Gehen (über 3, 5, 7 Schritte ausatmen) – 5 Runden"]]],a:"Kopf dreht nur so weit, dass der Mund frei ist; nicht anheben. Ausatmung beginnt direkt nach dem Einatmen."},
-{t:"Tabata Brustarmzug",d:"9 min",z:["Format","2 Tabata-Blöcke à 4 min (20 s / 10 s), dazwischen 1 min Pause."],m:"zwei kleine Wasserflaschen (0,5 l)",b:[["Block A – Armzug",["Brustarmzug in Vorneigung mit Flaschen – Außenzug, Innenzug vor der Brust, Hände zügig vorschieben."]],["Block B – Gesamtbewegung",["Brustarmzug im Stand (Atmung beim Innenzug), danach Frog Jump in Streamline – im Rhythmus „Ziehen – Atmen – Kicken – Gleiten“."]]],a:"Hände ziehen nicht hinter die Schulterlinie; Ellbogen bleiben beim Innenzug hoch; nach jedem Sprung 1 s Streamline halten (Gleitphase)."},
-{t:"Wassereinheit: Brusttechnik",d:"45 min",w:1,z:["Ziel","Die Brustinhalte aus Einheit 7 und 9 im Wasser umsetzen und mit einem EMOM-Intervall abschließen. Gesamtumfang ca. 1.200 m."],tb:[["Einschwimmen","Kraul und Brust im Wechsel","200 m","Wiederholung Kraultechnik aus Einheit 3"],["Brust Beine","Brustbeinschlag mit Brett","4 × 50 m, 20 s P.","Fußstellung, Gleitphase (Einheit 7)"],["Brust Arme","Brustarmzug mit Pullbuoy","4 × 25 m","kompakter Zug (Einheit 9)"],["Brust Timing","2 Beinschläge, 1 Armzug","4 × 25 m","Gleiten nach jedem Zyklus"],["Brust gesamt","Brustschwimmen, möglichst wenige Züge pro Bahn","4 × 50 m","Züge zählen"],["Tauchzug","Abstoß, Brust-Tauchzug, dann Brust","4 × 25 m","Streamline nach dem Abstoß"],["EMOM","25 m Brust zügig, Abgang alle 45 s","8 × 25 m","Technik auch unter Belastung halten"],["Ausschwimmen","Locker nach Wahl","100 m",""]],o:"Partner zählt Züge pro Bahn und achtet auf Fußstellung und Gleitphase."},
-{t:"Wasserfassen und hoher Ellbogen",d:"12 min",z:["Ziel","Die Early-Vertical-Forearm-Position (hoher Ellbogen, Unterarm früh senkrecht) als Bewegungsmuster einschleifen."],b:[[null,["Hoher Ellbogen an der Wand: seitlich zur Wand, Oberarm in Vorhalte, Unterarm nach unten kippen, Ellbogen bleibt an der Wand – je Seite 12×","Bauchlage auf Bank, Arm hängt: Hand und Unterarm zurückführen, Ellbogen bleibt oben – je Seite 12×","Theraband vorne befestigt, Vorneigung im Stand: nur die Zugphase bis Unterarm senkrecht – je Seite 3 × 10 (wenn kein Band: trocken, Schulter bleibt hoch)","Vollständiger Armzug mit Theraband in Zeitlupe, 4 s pro Zug – je Seite 2 × 8"]]]},
-{t:"EMOM Kraul-Athletik",d:"12 min",z:["Format","Every Minute On the Minute – zu Beginn jeder Minute die angegebene Übung ausführen, Restzeit ist Pause. 4 Runden à 3 Minuten."],m:"Handtuch",b:[[null,["Minute 1: 8 Burpees mit Streamline-Sprung","Minute 2: 30 Flutter-Kicks in Rückenlage (Arme in Streamline, Lendenwirbelsäule am Boden)","Minute 3: Unterarmstütz mit Kraul-Armvorschub – je Seite 8× (Handtuch unter der Hand auf glattem Boden erschwert)"]]],a:"Die Belastung sollte 30–40 s dauern; bleibt weniger als 15 s Pause, Wiederholungen reduzieren."},
-{t:"Rotation und Überwasserphase",d:"12 min",z:["Ziel","Längsachsenrotation aus Schulter- und Hüftachse koppeln und die entspannte Rückholphase erlernen."],b:[[null,["Rotation im Stand, Arme in Vorhalte: Schulter- und Hüftachse drehen gemeinsam – 20×","Reißverschluss-Übung: Daumen entlang der Körperseite zur Achsel ziehen, Ellbogen führt hoch – je Seite 12×","Fingerspitzen-Schleifen im Stand (Fingerspitzen nah an der Wasseroberfläche vorstellen) – je Seite 12×","Seitstütz mit Rotation: oberen Arm unter dem Körper durchführen und öffnen – je Seite 2 × 8","Gesamtbewegung im Stand vor dem Spiegel, Wechselarmzug mit Rotation – 3 × 30 s"]]],a:"Ellbogen führt die Rückholphase, Unterarm und Hand entspannt; Rotation ca. 40–45°, Kopf bleibt ruhig."},
-{t:"Tabata Delfin-Welle",d:"9 min",z:["Format","2 Tabata-Blöcke à 4 min (20 s / 10 s), dazwischen 1 min Pause; die Übungen eines Blocks wechseln sich ab."],m:"keins",b:[["Block A – Rumpfwelle",["Hollow Rocks (Hohlkörper-Schaukeln in Rückenlage)","Arch Rocks (Superman-Schaukeln in Bauchlage)"]],["Block B – Welle im Stand",["Delfin-Welle im Stand mit Armen in Streamline: Brustbein, Bauch, Hüfte nacheinander nach vorn","Squat Jumps"]]],a:"Die Welle beginnt im Oberkörper, nicht in den Knien; Beine bleiben geschlossen."},
-{t:"Hüft- und Gesäßaktivierung",d:"12 min",z:["Ziel","Stabilität und Gesäßkraft für Beinschlag, Abstoß und Startsprung aufbauen. 3 Durchgänge."],b:[[null,["Glute Bridge, oben 2 s halten – 15×","Single-Leg Glute Bridge – je Seite 8×","Squat – 12×","Ausfallschritt rückwärts mit Armen nach oben (Schultern neben die Ohren) – je Seite 8×"]]],a:"Becken bleibt bei einbeinigen Übungen waagerecht; Knie zeigt in Richtung Fußspitze."},
-{t:"EMOM Startsprung-Schnellkraft",d:"10 min",z:["Format","EMOM 10 min; die Restzeit jeder Minute dient der vollständigen Erholung, die für Schnellkraft nötig ist."],m:"weiche Unterlage (Matte, Teppich)",b:[[null,["Ungerade Minuten: 3 maximale Squat Jumps + 2 Standweitsprünge","Gerade Minuten: 3 Startsprung-Imitationen aus der Track-Start-Position – explosiv nach vorne-oben in Streamline springen, weich landen"]]],a:"Jede Wiederholung maximal explosiv; bei nachlassender Sprunghöhe abbrechen. Arme schwingen aktiv mit und gehen sofort in Streamline."},
-{t:"Wassereinheit: Kraul, Brust, Delfin, Start und Wende",d:"45 min",w:1,z:["Ziel","Abschluss – Delfin, Start und Wende aus Einheit 14–16 im Wasser umsetzen und Kraul, Brust und Delfin verbinden. Gesamtumfang ca. 1.100 m."],tb:[["Einschwimmen","Kraul und Brust im Wechsel","200 m","locker"],["Welle","Bauch-, Seit- und Rückenlage","4 × 25 m","Welle aus dem Rumpf (Einheit 14)"],["Kraul Arme","Fäuste schwimmen, Fass/Tonne/Basketball unter Wasser zurückschieben, explosive Druckphase, Überwasserphase: Reißverschluss","4 × 25 m","Timing"],["Sprint","Start vom Beckenrand, 25 m sprinten","4 × 25 m","Streamline nach dem Eintauchen (Einheit 16)"],["Rollwende","12,5 m Kraul anschwimmen, Rollwende, 12,5 m","8 × 25 m","kompakt rollen"],["Lagenkombination","Delfin, Brust, Kraul je 25 m","4 × 75 m, 45 s P.","Technik vor Tempo"],["Ausschwimmen","Locker nach Wahl","100 m",""]]},
-{t:"Pyramide",d:"10 min",z:["Format","Wiederholungspyramide 2 – 4 – 6 – 8 – 6 – 4 – 2, jede Stufe aus allen Übungen; Pausen nach Bedarf."],m:"keins",b:[[null,["Froschsprung (vollständige Streckung)","Liegestütz","Burpee"]]]},
-{t:"Koordination Arm–Bein–Atmung",d:"10 min",z:["Ziel","Die Teilbewegungen zu einem rhythmischen Gesamtablauf verbinden."],b:[[null,["Sechser-Beinschlag-Rhythmus im Stand: Armzug, dabei 3 kleine Tippschritte pro Armzug – 3 × 30 s","Bauchlage auf Bank: Wechselbeinschlag, dazu langsamer Armzug einarmig – je Seite 3 × 20 s","Wie 2, mit Seitatmung zur Zugarmseite – je Seite 3 × 20 s","Im Stand: Armzug, Rotation und Dreier-Atmung kombiniert, Augen geschlossen – 3 × 30 s"]]],a:"Beinschlag läuft durchgehend weiter, auch während der Atmung."},
-{t:"AMRAP Kraftausdauer",d:"12 min",z:["Format","AMRAP 12 min, Runden zählen."],m:"Stuhl, zwei Wasserflaschen",b:[[null,["5 Liegestütz","10 Stuhl-Dips (Druckphase)","15 Kniebeugen mit Armen in Hochhalte, Schultern neben den Ohren und stabil lassen","10 Delfin-Armzüge mit Flaschen in Vorneigung (Schlüssellochform)","20 Flutter-Kicks in Bauchlage (Paddeln)"]]],a:"Gleichmäßiges Tempo statt schnellem Start; Rundenzahl notieren, um sie bei Wiederholung zu vergleichen."},
-{t:"Rumpfstabilität für die Wasserlage",d:"12 min",z:["Ziel","Rumpfmuskulatur kräftigen, damit Hüfte und Beine im Wasser nicht absinken. 2 Durchgänge, je 30 s Belastung / 15 s Pause."],b:[[null,["Unterarmstütz mit wechselndem Armvorschieben (Kraul-Imitation)","Seitstütz links, Hüfte heben und senken","Seitstütz rechts, Hüfte heben und senken","Vierfüßlerstand mit abgehobenen Knien: gegengleich Arm und Bein strecken"]]],a:"Stabilität im Rumpf."},
-{t:"EMOM Rumpf und Wasserlage",d:"10 min",z:["Format","EMOM 10 min, jede Minute 40 s Belastung / 20 s Pause; 5 Übungen, 2 Runden."],m:"keins",b:[[null,["Schiffchen","Seitstütz links mit Hüftheben","Seitstütz rechts mit Hüftheben","Superman mit Brustarmzug-Imitation","Vierfüßlerstand mit abgehobenen Knien halten"]]]},
-{t:"Pause",d:"Ruhetag",p:1},
-{t:"Chipper „Schwimm-Finale“",d:"max. 15 min",z:["Format","Alle Übungen der Reihe nach einmal abarbeiten, auf Zeit; Zeitlimit 15 min."],m:"zwei Wasserflaschen",b:[[null,["50 Flutter-Kicks in Rückenlage","40 Kniebeugen mit Armen in Streamline","30 Brustarmzüge mit Flaschen in Vorneigung","20 Liegestütz","20 Frog Jumps","10 Burpees mit sauberem Strecksprung"]]]}
+
+/* ===== Tag 1 – 1. Dezember ===== */
+{
+  t:"Schulter- und BWS-Mobilisation",
+  d:"10 min",
+  z:["Ziel", "Bewegungsumfang im Schultergelenk und Rotationsfähigkeit der Brustwirbelsäule für Armzug und Körperrotation verbessern."],
+  b:[
+    [null, [
+      "Großes Armkreisen vorwärts und rückwärts, einarmig und gegengleich – je 10×",
+      "Wandengel: Rücken, Hinterkopf und Unterarme an der Wand, Arme langsam nach oben schieben – 2 × 10",
+      "Offenes Buch in Seitlage: oberen Arm öffnen, Blick folgt der Hand – je Seite 10×",
+      "Vierfüßlerstand mit Hand am Hinterkopf, Ellbogen zur Decke rotieren – je Seite 10×",
+      "Streamline-Dehnung an der Wand: Hände übereinander, Brustkorb sanft zur Wand – 3 × 20 s"
+    ]]
+  ],
+  a:"Kein Ausweichen des Beckens; Bewegung aus der Brustwirbelsäule"
+},
+
+/* ===== Tag 2 – 2. Dezember ===== */
+{
+  t:"Tabata Streamline-Power",
+  d:"9 min",
+  z:["Format", "2 Tabata-Blöcke à 4 min (8 × 20 s Belastung / 10 s Pause), dazwischen 1 min Pause. Die beiden Übungen eines Blocks wechseln sich ab."],
+  m:"keins",
+  b:[
+    ["Block A – Beine und Rumpf", [
+      "Squat Jumps mit Armen in Streamline",
+      "Flutter-Kicks (=Kraulbeinschläge in Rückenlage)"
+    ]],
+    ["Block B – Oberkörper und Rückseite", [
+      "Liegestütz (ggf. auf Knien)",
+      "Superman in Bauchlage mit langsamem Kraul-Armzug"
+    ]]
+  ],
+  a:"In den 20 s auf saubere Streamline achten statt auf maximale Wiederholungszahl"
+},
+
+/* ===== Tag 3 – 3. Dezember ===== */
+{
+  t:"Zugkraft Kraul mit Alltagsgegenständen",
+  d:"12 min",
+  z:["Ziel", "Stabilisation Zugmuskulatur (M. latissimus dorsi, M. triceps brachii) und Schulter ohne Sportgeräte. 3 Durchgänge, 30 s Pause."],
+  m:"Handtuch, Stuhl",
+  b:[
+    [null, [
+      "Handtuch-Armzug: Kniestütz auf glattem Boden, eine Hand auf dem Handtuch weit vorne, Handtuch mit hohem Ellbogen bis unter die Schulter ziehen – je Seite 10×",
+      "Stuhl-Dips (Druckphase): Hände auf der Sitzfläche, Ellbogen nach hinten beugen und strecken – 12×",
+      "Handtuch-Außenrotation: Handtuch straff zwischen den Händen, Ellbogen am Körper, Unterarme nach außen ziehen und 2 s halten – 15×",
+      "I-Y-T in Bauchlage ohne Gewicht (Schulterblätter zusammen, Daumen zeigen nach oben) – je Position 8×"
+    ]]
+  ],
+  a:"Hoher Ellbogen bleibt auch beim Handtuch-Armzug erhalten; der Zug endet hinten an der Hüfte."
+},
+
+/* ===== Tag 4 – 4. Dezember ===== */
+{
+  t:"Körperspannung",
+  d:"10 min",
+  z:["Ziel", "Die gestreckte, widerstandsarme Grundposition als Bewegungsvorstellung verankern."],
+  b:[
+    [null, [
+      "gestreckte Position im Stand: Arme über Kopf, Oberarme hinter den Ohren, Hände übereinander, Zehenstand – 5 × 15 s",
+      "gestreckte Position in Rückenlage auf der Matte, Fersen und Arme 2 cm angehoben – 4 × 15 s",
+      "Superman in Bauchlage – 4 × 15 s",
+      "Wechsel Rückenlage → Bauchlage: ohne Bodenkontakt von Armen und Beinen – 3 × 4 Rollen"
+    ]]
+  ],
+  a:"Kopf in Verlängerung der Wirbelsäule zwischen den Armen; Bauch- und Gesäßmuskulatur aktiv."
+},
+
+/* ===== Tag 5 – 5. Dezember ===== */
+{
+  t:"Wassereinheit: Kraultechnik",
+  d:"45 min",
+  w:1,
+  z:["Ziel", "Einstieg ins Wasser: Streamline, Wasserlage, Beinschlag, Atmung und Wasserfassen im Kraul erproben. Die Trockeneinheiten 4, 6, 8, 11 und 13 greifen diese Elemente auf. Gesamtumfang ca. 1.400 m."],
+  tb:[
+    ["Einschwimmen", "Kraul locker", "200 m", "ruhig, Atmung im Dreierrhythmus"],
+    ["Gleiten", "Abstoß in Streamline, so weit wie möglich gleiten", "6 × Abstoß", "Transfer von Einheit 2"],
+    ["Beinschlag", "Kraulbeine mit Brett, dann ohne Brett in Streamline", "4 × 50 m, 20 s P.", "Bewegung aus der Hüfte"],
+    ["Beinschlag + Rotation", "Seitlage-Beinschlag (6 Kicks), dann Rotation", "4 × 25 m", "vertieft in Einheit 6"],
+    ["Atmung", "Kraul mit Atmung alle 3/5/3 Züge", "4 × 50 m", "Ausatmen unter Wasser"],
+    ["Armzug", "Abschlagschwimmen, Fokus auf Überwasserphase mit hohem Ellbogen", "4 × 50 m", "vertieft in Einheit 11"],
+    ["Armzug", "Kraul mit Pullbuoy", "4 × 50 m, 20 s P.", "lang ziehen, Hand an Oberschenkel"],
+    ["Gesamtlage", "Kraul Gesamtbewegung, Technik vor Tempo", "4 × 50 m", "Züge pro Bahn zählen"],
+    ["Ausschwimmen", "Locker nach Wahl", "100 m", ""]
+  ]
+},
+
+/* ===== Tag 6 – 6. Dezember ===== */
+{
+  t:"Kraulbeinschlag trocken",
+  d:"10 min",
+  z:["Ziel", "Bewegungsauftrag des Kraulbeinschlags aus der Hüfte mit lockerem Fußgelenk und gestreckter Fußspitze."],
+  b:[
+    [null, [
+      "Fußgelenksmobilisation im Fersensitz (Fußrücken auf der Matte), leicht nach hinten lehnen – 3 × 30 s",
+      "Fußkreisen und Plantarflexion im Sitz – je Fuß 15×",
+      "Beinschlag in Bauchlage auf Bank, Stuhl oder Tisch, Hüfte an der Kante – 4 × 30 s",
+      "Beinschlag in Rückenlage auf der Matte, Unterarme unter dem Gesäß – 4 × 30 s",
+      "Beinschlag in Seitlage (vorbereitend für die Rotationsphase) – je Seite 2 × 20 s"
+    ]]
+  ],
+  a:"Bewegung beginnt in der Hüfte, Knie nur leicht gebeugt („Peitschenschlag“), kein „Fahrradfahren“."
+},
+
+/* ===== Tag 7 – 7. Dezember ===== */
+{
+  t:"AMRAP Brustbeine",
+  d:"10 min",
+  z:["Format", "As Many Rounds As Possible – in 10 min so viele Runden wie möglich, Runden zählen."],
+  m:"Bett- oder Sofakante, Wand",
+  b:[
+    [null, [
+      "10 Frog Jumps: Hocke mit ausgedrehten Füßen, explosiv in Streamline nach oben springen",
+      "10 Brustbeinschläge in Bauchlage auf der Bett- oder Sofakante (Hüfte an der Kante, Beine frei)",
+      "10 Sumo-Squats und 2 s Halt unten",
+      "20 s Wandsitz mit Armen in Streamline"
+    ]]
+  ],
+  a:"Beim Brustbeinschlag Fersen zum Gesäß, Füße aktiv ausdrehen und kreisförmig schließen – die Technik geht vor der Rundenzahl."
+},
+
+/* ===== Tag 8 – 8. Dezember ===== */
+{
+  t:"Atmung und Atemrhythmus",
+  d:"10 min",
+  z:["Ziel", "Seitatmung mit minimaler Kopfbewegung und vollständige Ausatmung automatisieren."],
+  b:[
+    [null, [
+      "Ausatmen gegen Widerstand: durch Mund und Nase langsam ausblasen, als wäre das Gesicht im Wasser – 10 × 5 s",
+      "Seitatmung im Stand, Oberkörper vorgeneigt: Kopf mit der Schulterrotation drehen, ein Auge bleibt „im Wasser“ – je Seite 10×",
+      "Kombination mit einarmigem Armzug im Stand: Atmung zur Zugarmseite – je Seite 10×",
+      "Dreier-Atemrhythmus im Stand mit Wechselarmzug – 3 × 1 min",
+      "Optional: Atemhaltung im Gehen (über 3, 5, 7 Schritte ausatmen) – 5 Runden"
+    ]]
+  ],
+  a:"Kopf dreht nur so weit, dass der Mund frei ist; nicht anheben."
+},
+
+/* ===== Tag 9 – 9. Dezember ===== */
+{
+  t:"Tabata Brustarmzug",
+  d:"9 min",
+  z:["Format", "2 Tabata-Blöcke à 4 min (20 s / 10 s), dazwischen 1 min Pause."],
+  m:"zwei kleine Wasserflaschen (0,5 l)",
+  b:[
+    ["Block A – Armzug", [
+      "Brustarmzug in Vorneigung mit Flaschen – Zug- und Druckphase vor der Brust, Hände zügig vorschieben."
+    ]],
+    ["Block B – Gesamtbewegung", [
+      "Brustarmzug im Stand, danach Frog Jump in Streamline"
+    ]]
+  ],
+  a:"Hände ziehen nicht hinter die Schulterlinie; Ellbogen bleiben während der Druckphase hoch"
+},
+
+/* ===== Tag 10 – 10. Dezember ===== */
+{
+  t:"EMOM Kraul-Athletik",
+  d:"12 min",
+  z:["Format", "Every Minute On the Minute – zu Beginn jeder Minute die angegebene Übung ausführen, Restzeit ist Pause. 4 Runden à 3 Minuten."],
+  m:"ggf. Handtuch",
+  b:[
+    [null, [
+      "Minute 1: 8 Burpees mit Streamline-Sprung",
+      "Minute 2: 30 Flutter-Kicks in Rückenlage (Arme in Streamline, Lendenwirbelsäule am Boden)",
+      "Minute 3: Unterarmstütz mit Kraul-Armvorschub – je Seite 8× (Handtuch unter der Hand auf glattem Boden erschwert)"
+    ]]
+  ],
+  a:"Die Belastung sollte 30–40 s dauern; bleibt weniger als 15 s Pause, Wiederholungen reduzieren."
+},
+
+/* ===== Tag 11 – 11. Dezember ===== */
+{
+  t:"Wasserfassen und hoher Ellbogen",
+  d:"12 min",
+  z:["Ziel", "Die Early-Vertical-Forearm-Position (hoher Ellbogen, Unterarm früh senkrecht) als Bewegungsmuster einschleifen."],
+  b:[
+    [null, [
+      "Hoher Ellbogen an der Wand: seitlich zur Wand, Oberarm in Vorhalte, Unterarm nach unten kippen, Ellbogen bleibt an der Wand – je Seite 12×",
+      "Bauchlage auf Bank, Arm hängt: Hand und Unterarm zurückführen, Ellbogen bleibt oben – je Seite 12×",
+      "Vorneigung im Stand: nur die Zugphase bis Unterarm senkrecht – je Seite 3 × 10 (Schulter bleibt hoch)",
+      "Vollständiger Armzug in Zeitlupe, 4 s pro Zug – je Seite 2 × 8"
+    ]]
+  ]
+},
+
+/* ===== Tag 12 – 12. Dezember ===== */
+{
+  t:"Wassereinheit: Brusttechnik",
+  d:"45 min",
+  w:1,
+  z:["Ziel", "Die Brustinhalte aus Einheit 7 und 9 im Wasser umsetzen und mit einem EMOM-Intervall abschließen. Gesamtumfang ca. 1.200 m."],
+  tb:[
+    ["Einschwimmen", "Kraul und Brust im Wechsel", "200 m", "Wiederholung Kraultechnik aus Einheit 5"],
+    ["Brust Beine", "Brustbeinschlag mit Brett", "4 × 50 m, 20 s P.", "Fußstellung, Gleitphase (Einheit 7)"],
+    ["Brust Arme", "Brustarmzug mit Pullbuoy", "4 × 25 m", "kompakter Zug (Einheit 9)"],
+    ["Brust Timing", "2 Beinschläge, 1 Armzug", "4 × 25 m", "Gleiten nach jedem Zyklus"],
+    ["Brust gesamt", "Brustschwimmen, möglichst wenige Züge pro Bahn", "4 × 50 m", "Züge zählen"],
+    ["Tauchzug", "Abstoß, Brust-Tauchzug, dann Brust", "4 × 25 m", "Streamline nach dem Abstoß"],
+    ["EMOM", "25 m Brust zügig, Abgang alle 45 s", "8 × 25 m", "Technik auch unter Belastung halten"],
+    ["Ausschwimmen", "Locker nach Wahl", "100 m", ""]
+  ],
+  o:"Partner zählt Züge pro Bahn und achtet auf Fußstellung und Gleitphase."
+},
+
+/* ===== Tag 13 – 13. Dezember ===== */
+{
+  t:"Rotation und Überwasserphase",
+  d:"12 min",
+  z:["Ziel", "Längsachsenrotation aus Schulter- und Hüftachse koppeln und die entspannte Rückholphase erlernen."],
+  b:[
+    [null, [
+      "Rotation im Stand, Arme in Vorhalte: Schulter- und Hüftachse drehen gemeinsam – 20×",
+      "Reißverschluss-Übung: Daumen entlang der Körperseite zur Achsel ziehen, Ellbogen führt hoch – je Seite 12×",
+      "Fingerspitzen-Schleifen im Stand (Fingerspitzen nah an der Wasseroberfläche vorstellen) – je Seite 12×",
+      "Seitstütz mit Rotation: oberen Arm unter dem Körper durchführen und öffnen – je Seite 2 × 8",
+      "Gesamtbewegung im Stand vor dem Spiegel, Wechselarmzug mit Rotation – 3 × 30 s"
+    ]]
+  ],
+  a:"Ellbogen führt die Rückholphase, Unterarm und Hand entspannt; Rotation ca. 40–45°, Kopf bleibt ruhig."
+},
+
+/* ===== Tag 14 – 14. Dezember ===== */
+{
+  t:"Tabata Delfin-Welle",
+  d:"9 min",
+  z:["Format", "2 Tabata-Blöcke à 4 min (20 s / 10 s), dazwischen 1 min Pause; die Übungen eines Blocks wechseln sich ab."],
+  m:"keins",
+  b:[
+    ["Block A – Rumpfwelle", [
+      "Hollow Rocks (Hohlkörper-Schaukeln in Rückenlage)",
+      "Arch Rocks (Superman-Schaukeln in Bauchlage)"
+    ]],
+    ["Block B – Welle im Stand", [
+      "Delfin-Welle im Stand mit Armen in Streamline: Brustbein, Bauch, Hüfte nacheinander nach vorn",
+      "Squat Jumps"
+    ]]
+  ],
+  a:"Die Welle beginnt im Oberkörper, nicht in den Knien; Beine bleiben geschlossen."
+},
+
+/* ===== Tag 15 – 15. Dezember ===== */
+{
+  t:"Hüft- und Gesäßaktivierung",
+  d:"12 min",
+  z:["Ziel", "Stabilität und Gesäßkraft für Beinschlag, Abstoß und Startsprung aufbauen. 3 Durchgänge."],
+  b:[
+    [null, [
+      "Glute Bridge, oben 2 s halten – 15×",
+      "Single-Leg Glute Bridge – je Seite 8×",
+      "Squat – 12×",
+      "Ausfallschritt rückwärts mit Arme nach oben (Schultern neben die Ohren) – je Seite 8×"
+    ]]
+  ],
+  a:"Becken bleibt bei einbeinigen Übungen waagerecht; Knie zeigt in Richtung Fußspitze."
+},
+
+/* ===== Tag 16 – 16. Dezember ===== */
+{
+  t:"EMOM Startsprung-Schnellkraft",
+  d:"10 min",
+  z:["Format", "EMOM 10 min; die Restzeit jeder Minute dient der vollständigen Erholung."],
+  m:"weiche Unterlage (Matte, Teppich)",
+  b:[
+    [null, [
+      "Ungerade Minuten: 3 maximale Squat Jumps + 2 Standweitsprünge",
+      "Gerade Minuten: 3 Startsprung-Imitationen aus der Track-Start-Position – explosiv nach vorne-oben in Streamline springen, weich landen"
+    ]]
+  ],
+  a:"Jede Wiederholung maximal explosiv; bei nachlassender Sprunghöhe abbrechen. Arme schwingen aktiv mit und gehen sofort in Streamline."
+},
+
+/* ===== Tag 17 – 17. Dezember ===== */
+{
+  t:"Koordination Arm–Bein–Atmung",
+  d:"10 min",
+  z:["Ziel", "Die Teilbewegungen zu einem rhythmischen Gesamtablauf verbinden."],
+  b:[
+    [null, [
+      "Sechser-Beinschlag-Rhythmus im Stand: Armzug, dabei 3 kleine Tippschritte pro Armzug – 3 × 30 s",
+      "Bauchlage auf Bank/Bett: Wechselbeinschlag, dazu langsamer Armzug einarmig – je Seite 3 × 20 s",
+      "Wie 2, mit Seitatmung zur Zugarmseite – je Seite 3 × 20 s",
+      "Im Stand: Armzug, Rotation und Dreier-Atmung kombiniert, Augen geschlossen – 3 × 30 s"
+    ]]
+  ],
+  a:"Beinschlag läuft durchgehend weiter, auch während der Atmung."
+},
+
+/* ===== Tag 18 – 18. Dezember ===== */
+{
+  t:"Pyramide",
+  d:"10 min",
+  z:["Format", "Wiederholungspyramide 2 – 4 – 6 – 8 – 6 – 4 – 2, jede Stufe aus allen drei Übungen; Pausen nach Bedarf."],
+  m:"keins",
+  b:[
+    [null, [
+      "Froschsprung (vollständige Streckung)",
+      "Liegestütz",
+      "Burpee"
+    ]]
+  ]
+},
+
+/* ===== Tag 19 – 19. Dezember ===== */
+{
+  t:"Wassereinheit: Kraul, Brust, Delfin, Start und Wende",
+  d:"45 min",
+  w:1,
+  z:["Ziel", "Abschluss – Delfin, Start und Wende aus Einheit 14–16 im Wasser umsetzen und Kraul, Brust und Delfin verbinden. Gesamtumfang ca. 1.100 m."],
+  tb:[
+    ["Einschwimmen", "Kraul und Brust im Wechsel", "200 m", "locker"],
+    ["Welle", "Bauch-, Seit- und Rückenlage", "4 × 25 m", "Welle aus dem Rumpf (Einheit 14)"],
+    ["Kraul Arme", "Fäuste schwimmen, Fass/Tonne/Basketball unter Wasser zurückschieben, explosive Druckphase, Überwasserphase: Reißverschluss", "4 × 25 m", "Timing"],
+    ["Sprint", "Start vom Beckenrand, 25 m sprinten", "4 × 25 m", "Streamline nach dem Eintauchen (Einheit 16)"],
+    ["Rollwende", "12,5 m Kraul anschwimmen, Rollwende, 12,5 m", "8 × 25 m", "kompakt rollen"],
+    ["Lagenkombination", "Delfin, Brust, Kraul je 25 m", "4 × 75 m, 45 s P.", "Technik vor Tempo"],
+    ["Ausschwimmen", "Locker nach Wahl", "100 m", ""]
+  ]
+},
+
+/* ===== Tag 20 – 20. Dezember ===== */
+{
+  t:"AMRAP Kraftausdauer",
+  d:"12 min",
+  z:["Format", "AMRAP 12 min, Runden zählen."],
+  m:"Stuhl, zwei Wasserflaschen",
+  b:[
+    [null, [
+      "5 Liegestütz",
+      "10 Stuhl-Dips (Druckphase)",
+      "15 Kniebeugen mit Armen in Hochhalte, Schultern neben den Ohren und stabil lassen",
+      "10 Delfin-Armzüge mit Flaschen in Vorneigung",
+      "20 Flutter-Kicks in Bauchlage"
+    ]]
+  ],
+  a:"Gleichmäßiges Tempo statt schnellem Start; Rundenzahl notieren, um sie bei Wiederholung zu vergleichen."
+},
+
+/* ===== Tag 21 – 21. Dezember ===== */
+{
+  t:"Rumpfstabilität für die Wasserlage",
+  d:"12 min",
+  z:["Ziel", "Rumpfmuskulatur kräftigen, damit Hüfte und Beine im Wasser nicht absinken. 2 Durchgänge, je 30 s Belastung / 15 s Pause."],
+  b:[
+    [null, [
+      "Unterarmstütz mit wechselndem Armvorschieben (Kraul-Imitation)",
+      "Seitstütz links, Hüfte heben und senken",
+      "Seitstütz rechts, Hüfte heben und senken",
+      "Vierfüßlerstand mit abgehobenen Knien: gegengleich Arm und Bein strecken"
+    ]]
+  ],
+  a:"Stabilität Rumpf"
+},
+
+/* ===== Tag 22 – 22. Dezember ===== */
+{
+  t:"EMOM Rumpf und Wasserlage",
+  d:"10 min",
+  z:["Format", "EMOM 10 min, jede Minute 40 s Belastung / 20 s Pause; 5 Übungen, 2 Runden."],
+  m:"keins",
+  b:[
+    [null, [
+      "Schiffchen",
+      "Seitstütz links mit Hüftheben",
+      "Seitstütz rechts mit Hüftheben",
+      "Superman mit Brustarmzug-Imitation",
+      "Vierfüßlerstand mit abgehobenen Knien halten"
+    ]]
+  ]
+},
+
+/* ===== Tag 23 – 23. Dezember ===== */
+{
+  t:"Pause",
+  d:"Ruhetag",
+  p:1
+},
+
+/* ===== Tag 24 – 24. Dezember ===== */
+{
+  t:"„Schwimm-Finale“",
+  d:"max. 15 min",
+  z:["Format", "Alle Übungen der Reihe nach einmal abarbeiten, auf Zeit; Zeitlimit 15 min."],
+  m:"zwei Wasserflaschen",
+  b:[
+    [null, [
+      "50 Flutter-Kicks in Rückenlage",
+      "40 Kniebeugen mit Armen in Streamline",
+      "30 Brustarmzüge mit Flaschen in Vorneigung",
+      "20 Liegestütz",
+      "20 Frog Jumps",
+      "10 Burpees mit sauberem Strecksprung"
+    ]]
+  ]
+}
+
 ];
+/* ===================== Ende der Übungen ===================== */
 /* ===================== EINSTELLUNGEN (Script) ===================== */
 const ORDER=[7,18,3,12,22,9,1,15,20,5,24,11,2,14,17,8,10,4,19,13,23,6,16,21]; /* Reihenfolge der Türchen im Raster */
 const BIG=[24];              /* diese Türchen werden doppelt groß angezeigt, z. B. [24] oder [3,10,17,24] oder [] */
