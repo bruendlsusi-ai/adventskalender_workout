@@ -101,8 +101,6 @@ td.u{white-space:nowrap}
 .btn{min-height:44px;padding:0 16px;border-radius:8px;border:2px solid currentColor;background:transparent;color:inherit;font:700 15px var(--font-text);cursor:pointer}
 .btn.pri{background:var(--red);border-color:var(--red);color:#fff}
 .btn:disabled{opacity:.35;cursor:default}
-.btn.pv{margin-top:14px;color:#fff;border-color:rgba(255,255,255,.6)}
-.btn.pv[aria-pressed=true]{background:#fff;color:var(--tink);border-color:#fff}
 .btn:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
 @media(max-width:900px){.grid{grid-template-columns:repeat(var(--cols-tablet),minmax(0,1fr))}}
 @media(max-width:600px){.grid{grid-template-columns:repeat(var(--cols-phone),minmax(0,1fr));gap:calc(var(--gap) * .75)}.door{padding:8px}.door .meta span{display:none}.door.open .ttl{font-size:12px}table{font-size:13px}th,td{padding:6px 4px}.db,.dh{padding-left:16px;padding-right:16px}.df{padding-left:16px;padding-right:16px}}
@@ -114,7 +112,6 @@ td.u{white-space:nowrap}
     <h1>Schwimm-Adventskalender</h1>
     <p class="lead">24 Mini-Workouts vom 1. bis 24. Dezember: Trockentechnik und Athletik für zu Hause, dazu drei Wassereinheiten an den Samstagen 5., 12. und 19. Dezember.</p>
     <p class="status" id="status"></p>
-    <button class="btn pv" id="pvt" aria-pressed="false">Vorschau: alle Türchen öffnen</button>
   </div>
   <div class="rope" id="rope" aria-hidden="true"></div>
   <svg class="waves" viewBox="0 0 1200 56" preserveAspectRatio="none" aria-hidden="true"><path d="M0 22 Q75 6 150 22 T300 22 T450 22 T600 22 T750 22 T900 22 T1050 22 T1200 22 V56 H0Z" fill="var(--bg)"/></svg>
@@ -545,7 +542,6 @@ const D=[
 const ORDER=[7,18,3,12,22,9,1,15,20,5,24,11,2,14,17,8,10,4,19,13,23,6,16,21]; /* Reihenfolge der Türchen im Raster */
 const BIG=[24];              /* diese Türchen werden doppelt groß angezeigt, z. B. [24] oder [3,10,17,24] oder [] */
 const MONAT=11;              /* 11 = Dezember (Januar = 0). Türchen n öffnet sich am n. Tag dieses Monats */
-const VORSCHAU_BUTTON=true;  /* false = Button "Vorschau" ausblenden (Vorschau dann nur über #vorschau am Link) */
 /* Inhalte der Türchen stehen oben in D: t = Titel, d = Dauer, z = [Label, Text], m = Material,
    b = Übungsblöcke [Überschrift oder null, [Übungen]], a = Achten auf, w:1 = Wassereinheit, tb = Tabelle, o = Beobachtung, p:1 = Pause */
 /* ===================== Ende der Einstellungen ===================== */
@@ -553,7 +549,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const WAVE='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 15c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2" fill="none" stroke="#0f7fa0" stroke-width="2.2" stroke-linecap="round"/></svg>';
 const MOON='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="#7d9aa2"/></svg>';
 const LOCK='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" fill="#7d9aa2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="#7d9aa2" stroke-width="2.2"/></svg>';
-let preview=location.hash==="#vorschau";
+const preview=false;
 const now=new Date(),Y=now.getMonth()===0?now.getFullYear()-1:now.getFullYear();
 const isOpen=n=>preview||now>=new Date(Y,MONAT,n);
 let done={};try{done=JSON.parse(localStorage.getItem("swim-advent-done")||"{}")}catch(e){}
@@ -602,12 +598,6 @@ document.getElementById("nx").onclick=()=>show(cur+1);
 document.getElementById("dn").onclick=()=>{if(done[cur])delete done[cur];else done[cur]=1;save();render();show(cur)};
 dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close()});
 document.addEventListener("keydown",e=>{if(!dlg.open)return;if(e.key==="ArrowLeft"&&!document.getElementById("pv").disabled)show(cur-1);if(e.key==="ArrowRight"&&!document.getElementById("nx").disabled)show(cur+1)});
-const pvt=document.getElementById("pvt");
-const syncPv=()=>{pvt.setAttribute("aria-pressed",preview);pvt.textContent=preview?"Vorschau beenden":"Vorschau: alle Türchen öffnen"};
-pvt.onclick=()=>{preview=!preview;syncPv();render()};
-syncPv();
-if(!VORSCHAU_BUTTON)pvt.hidden=true;
-window.addEventListener("hashchange",()=>location.reload());
 document.getElementById("rope").innerHTML="<i></i>".repeat(90);
 render();
 }
