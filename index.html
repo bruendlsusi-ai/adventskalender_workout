@@ -549,9 +549,8 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const WAVE='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 15c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2" fill="none" stroke="#0f7fa0" stroke-width="2.2" stroke-linecap="round"/></svg>';
 const MOON='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="#7d9aa2"/></svg>';
 const LOCK='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" fill="#7d9aa2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="#7d9aa2" stroke-width="2.2"/></svg>';
-let preview=location.hash==="#vorschau";
 const now=new Date(),Y=now.getMonth()===0?now.getFullYear()-1:now.getFullYear();
-const isOpen=n=>preview||now>=new Date(Y,MONAT,n);
+const isOpen=n=>now>=new Date(Y,MONAT,n);
 let done={};try{done=JSON.parse(localStorage.getItem("swim-advent-done")||"{}")}catch(e){}
 const save=()=>{try{localStorage.setItem("swim-advent-done",JSON.stringify(done))}catch(e){}};
 const grid=document.getElementById("grid"),dlg=document.getElementById("dlg");
@@ -562,8 +561,7 @@ function render(){
     const ic=!o?LOCK:u.w?WAVE:u.p?MOON:"";
     return `<button class="${cls}" data-n="${n}" aria-label="Türchen ${n}${o?": "+esc(u.t):", noch verschlossen"}"><span class="n">${n}</span><span class="ttl">${o?esc(u.t):""}</span><span class="meta">${ic}<span>${o?esc(u.d):n+". Dezember"}</span></span></button>`}).join("");
   const c=Object.keys(done).length,st=document.getElementById("status");
-  if(preview)st.innerHTML="Vorschau: alle Türchen sind offen.";
-  else if(now<new Date(Y,MONAT,1)){const days=Math.ceil((new Date(Y,MONAT,1)-now)/864e5);st.innerHTML=`Noch <b>${days} ${days===1?"Tag":"Tage"}</b> bis zum ersten Türchen.`}
+  if(now<new Date(Y,MONAT,1)){const days=Math.ceil((new Date(Y,MONAT,1)-now)/864e5);st.innerHTML=`Noch <b>${days} ${days===1?"Tag":"Tage"}</b> bis zum ersten Türchen.`}
   else st.innerHTML=`<b>${c} von 24</b> Einheiten erledigt.`;
 }
 function body(u){
@@ -598,7 +596,6 @@ document.getElementById("nx").onclick=()=>show(cur+1);
 document.getElementById("dn").onclick=()=>{if(done[cur])delete done[cur];else done[cur]=1;save();render();show(cur)};
 dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close()});
 document.addEventListener("keydown",e=>{if(!dlg.open)return;if(e.key==="ArrowLeft"&&!document.getElementById("pv").disabled)show(cur-1);if(e.key==="ArrowRight"&&!document.getElementById("nx").disabled)show(cur+1)});
-window.addEventListener("hashchange",()=>location.reload());
 document.getElementById("rope").innerHTML="<i></i>".repeat(90);
 render();
 }
